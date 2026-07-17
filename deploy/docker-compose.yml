@@ -1,0 +1,67 @@
+# cordane — self-hostable control plane, one command.
+#
+#   1. cp .env.example .env   &&   edit .env
+#   2. docker compose up -d
+#
+# Two services on a private network; only Caddy publishes 80/443. Caddy does
+# wildcard TLS and reverse-proxies to cordane; cordane keeps its SQLite DB on a
+# named volume and (optionally) streams backups to object storage via litestream.
+#
+# Images are pulled prebuilt from GHCR — no toolchain needed. To build your own
+# (e.g. a Caddy with a non-Cloudflare DNS plugin) see deploy/README.md.
+name: cordane
+
+services:
+  caddy:
+    image: ghcr.io/cordane/caddy:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp" # HTTP/3
+    environment:
+      CONTROL_HOST: ${CONTROL_HOST}
+      PROXY_DOMAIN: ${PROXY_DOMAIN}
+      CF_API_TOKEN: ${CF_API_TOKEN}
+      ACME_EMAIL: ${ACME_EMAIL:-}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data # certs & ACME account — persist to avoid re-issuing
+      - caddy_config:/config
+    depends_on:
+      - cordane
+
+  cordane:
+    image: ghcr.io/cordane/cordane:latest
+    restart: unless-stopped
+    # Not published to the host — Caddy reaches it over the compose network.
+    expose:
+      - "8080"
+    environment:
+      # --- required ---
+      EXTERNAL_URL: ${EXTERNAL_URL}
+      CORDANE_SECRET_KEY: ${CORDANE_SECRET_KEY}
+      CORDANE_GITHUB_CLIENT_ID: ${CORDANE_GITHUB_CLIENT_ID}
+      CORDANE_GITHUB_CLIENT_SECRET: ${CORDANE_GITHUB_CLIENT_SECRET}
+      # --- app previews: subdomain mode (blank = path-based) ---
+      PROXY_DOMAIN: ${PROXY_DOMAIN:-}
+      # --- licensing (blank = free community tier) ---
+      CORDANE_LICENSE_KEY: ${CORDANE_LICENSE_KEY:-}
+      CORDANE_LICENSE_SERVER: ${CORDANE_LICENSE_SERVER:-}
+      # --- update check (blank = on; "off" disables the update-available banner) ---
+      CORDANE_UPDATE_CHECK: ${CORDANE_UPDATE_CHECK:-}
+      CORDANE_UPDATE_CHANNEL: ${CORDANE_UPDATE_CHANNEL:-}
+      # --- backups to object storage (all blank = disabled) ---
+      LITESTREAM_ENDPOINT: ${LITESTREAM_ENDPOINT:-}
+      LITESTREAM_BUCKET: ${LITESTREAM_BUCKET:-}
+      LITESTREAM_PATH: ${LITESTREAM_PATH:-cordane.db}
+      LITESTREAM_REGION: ${LITESTREAM_REGION:-auto}
+      LITESTREAM_ACCESS_KEY_ID: ${LITESTREAM_ACCESS_KEY_ID:-}
+      LITESTREAM_SECRET_ACCESS_KEY: ${LITESTREAM_SECRET_ACCESS_KEY:-}
+    volumes:
+      - cordane_data:/data # cordane.db + secret.key + proxy.key — the only durable state
+
+volumes:
+  caddy_data:
+  caddy_config:
+  cordane_data:

@@ -1,0 +1,19 @@
+# SIMPLE MODE — single hostname, HTTP-01 TLS, NO DNS API token, NO wildcard.
+#
+# Use this if you don't want to create a DNS-provider API token. App previews
+# are then served path-based at /w/{worker}/{app}/ on the control-plane origin
+# (leave PROXY_DOMAIN unset in .env so cordane uses path-based mode too).
+#
+# Trade-off: previews that use absolute URLs / websockets can break — fine for
+# simple/trusted apps, not for arbitrary web apps. For real previews use the
+# default wildcard Caddyfile instead.
+#
+# To use: in docker-compose.yml mount this file instead of ./Caddyfile:
+#     - ./Caddyfile.pathbased:/etc/caddy/Caddyfile:ro
+
+{$CONTROL_HOST} {
+	encode zstd gzip
+	reverse_proxy cordane:8080 {
+		flush_interval -1
+	}
+}

@@ -1,0 +1,34 @@
+# cordane — TLS termination + reverse proxy for the hub AND wildcard app
+# previews, on one box. Values come from the compose environment (.env).
+#
+# Free auto-renewing WILDCARD TLS via Let's Encrypt / ZeroSSL using the ACME
+# DNS-01 challenge. DNS-01 is REQUIRED for *.{$PROXY_DOMAIN} — HTTP-01 cannot
+# validate a wildcard. Caddy writes the _acme-challenge TXT records through the
+# Cloudflare API, so CF_API_TOKEN needs Zone:DNS:Edit on the served zone(s).
+#
+# Non-Cloudflare DNS: rebuild the image with your plugin (see caddy.Dockerfile)
+# and swap the `dns cloudflare …` directive below.
+#
+# Prefer the dead-simple path-based setup with no DNS token? Use
+# Caddyfile.pathbased instead (see deploy/README.md) and leave PROXY_DOMAIN unset.
+
+{
+	# Uncomment to receive cert-expiry notices from the ACME CA:
+	# email {$ACME_EMAIL}
+}
+
+# Hub (control plane) + per-app previews. cordane serves BOTH and tells them
+# apart by Host header: the apex ({$CONTROL_HOST}) is the control plane, while
+# *.{$PROXY_DOMAIN} labels are per-app preview origins. flush_interval -1
+# disables response buffering — required for the long-lived terminal / app /
+# websocket streams.
+{$CONTROL_HOST}, *.{$PROXY_DOMAIN} {
+	tls {
+		dns cloudflare {$CF_API_TOKEN}
+		resolvers 1.1.1.1
+	}
+	encode zstd gzip
+	reverse_proxy cordane:8080 {
+		flush_interval -1
+	}
+}
