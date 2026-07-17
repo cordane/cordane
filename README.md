@@ -43,7 +43,8 @@ replacement (no tmux keybindings or copy-mode).
 **A board that runs the work.** Drop a ticket on the kanban board and Cordane
 cuts a git worktree, boots the dev server on its own port, and turns your
 coding agent loose — while the whole team watches live. Review a diff and a
-green-checks badge, then merge. Every run keeps its full audit trail: exact
+green-checks badge, then merge — from your phone if that's where you are.
+Every run keeps its full audit trail: exact
 prompt, exact diff, what checks ran. Keep your tracker — this is the execution
 layer where agent work happens, not a project-management tool.
 
