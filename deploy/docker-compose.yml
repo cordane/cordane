@@ -15,6 +15,14 @@ services:
   caddy:
     image: ghcr.io/cordane/caddy:latest
     restart: unless-stopped
+    # Drop all Linux capabilities and block privilege escalation; add back only the
+    # one Caddy needs to bind the privileged ports 80/443. (A4.)
+    security_opt:
+      - "no-new-privileges:true"
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
     ports:
       - "80:80"
       - "443:443"
@@ -34,6 +42,12 @@ services:
   cordane:
     image: ghcr.io/cordane/cordane:latest
     restart: unless-stopped
+    # Runs as a non-root user binding an unprivileged port, so it needs no Linux
+    # capabilities at all; drop them and block privilege escalation. (A4.)
+    security_opt:
+      - "no-new-privileges:true"
+    cap_drop:
+      - ALL
     # Not published to the host — Caddy reaches it over the compose network.
     expose:
       - "8080"
