@@ -9,8 +9,11 @@ you can reach a box behind corporate NAT or a home router from any browser, with
 no inbound ports, no VPN, no SSH config.
 
 🌐 **[cordane.ai](https://cordane.ai)** · 📖 **[Docs](https://cordane.ai/docs)** ·
-🗺 **[Roadmap](https://cordane.ai/roadmap)** · 🔒 **Status: private beta —
-[request access](https://cordane.ai/#beta)**
+🗺 **[Roadmap](https://cordane.ai/roadmap)** · 🔒 **[Security](SECURITY.md)**
+
+**Free forever, self-hosted, every feature.** Two containers on a small VPS —
+[jump to the quickstart](#self-hosting). Or let us run the hub for you: see
+[pricing](https://cordane.ai/#pricing).
 
 ```mermaid
 flowchart LR
@@ -76,15 +79,42 @@ cordane worker join https://your-team.cordane.app --token crdjt_…
 
 ## Self-hosting
 
-The complete Docker Compose stack (hub + wildcard TLS + backups on one small
-VPS) is in [`deploy/`](deploy/) — see [`deploy/README.md`](deploy/README.md).
+Two containers on one small VPS: the hub, plus Caddy for automatic TLS. Images
+are public on GHCR, so you need nothing installed but Docker.
 
-Cordane is in **private beta**: container images and license keys are currently
-provided to beta testers. [Request access](https://cordane.ai/#beta) and we'll
-get you set up. The free community tier (1 worker, 1 project, 2 users, 3
-concurrent agent runs — every feature included) needs no license key at all,
-and paid keys keep working offline within a grace window, so a Cordane outage
-never blocks you.
+```sh
+git clone https://github.com/cordane/cordane.git
+cd cordane/deploy
+cp .env.example .env         # fill in the values below, then:
+docker compose up -d
+```
+
+Five values in `.env` get you running — your hub's URL, a secret key, and a
+GitHub OAuth app's id/secret for sign-in:
+
+| Var | What |
+|-----|------|
+| `EXTERNAL_URL` / `CONTROL_HOST` | your hub's URL / hostname |
+| `CORDANE_SECRET_KEY` | `openssl rand -base64 32` — **back this up** |
+| `CORDANE_GITHUB_CLIENT_ID/SECRET` | a GitHub OAuth app, callback `${EXTERNAL_URL}/api/v1/auth/github/callback` |
+
+Open your `EXTERNAL_URL` and sign in with GitHub — **the first account to sign
+in becomes the admin.** Then connect a machine:
+
+```sh
+curl -fsSL https://<your-hub>/install.sh | sh            # installs the `cordane` binary
+cordane worker join https://<your-hub> --token crdjt_…   # token from the hub's Workers page
+```
+
+DNS records, wildcard preview subdomains, backups to any S3-compatible bucket,
+and a "simple mode" that needs no DNS API token are all in
+[`deploy/README.md`](deploy/README.md).
+
+**No license key required.** The Community tier — 1 worker, 1 project, 2 users,
+3 concurrent agent runs, and *every* feature — is free forever and never phones
+home. Paid keys lift the caps and keep working offline within a grace window, so
+a Cordane outage never blocks you. See
+[pricing](https://cordane.ai/#pricing).
 
 ## Issues & feedback
 
@@ -94,6 +124,11 @@ This is Cordane's public home — bug reports and feature requests are welcome i
 
 ## License
 
-Cordane itself is proprietary software (see [cordane.ai](https://cordane.ai)
-for terms and pricing). The contents of this repository — documentation and
-deployment configuration — are MIT-licensed ([LICENSE](LICENSE)).
+The contents of **this repository** — documentation and deployment
+configuration — are MIT-licensed ([LICENSE](LICENSE)). Copy, fork and adapt them
+freely.
+
+The **container images** they deploy (`ghcr.io/cordane/cordane`,
+`ghcr.io/cordane/caddy`) are proprietary software owned by Sitedity SRL, free to
+run on the Community tier and otherwise governed by the
+[Terms](https://cordane.ai/terms). [`NOTICE`](NOTICE) spells out the split.

@@ -9,11 +9,16 @@
 #
 # Images are pulled prebuilt from GHCR — no toolchain needed. To build your own
 # (e.g. a Caddy with a non-Cloudflare DNS plugin) see deploy/README.md.
+#
+# The `:stable` tag is the released build, moved deliberately after a version has
+# proven itself on our managed fleet. Pin a specific commit SHA instead if you
+# want to control exactly when you move; `:latest` is the development tag and
+# tracks every change — don't run it in production.
 name: cordane
 
 services:
   caddy:
-    image: ghcr.io/cordane/caddy:latest
+    image: ghcr.io/cordane/caddy:stable
     restart: unless-stopped
     # Drop all Linux capabilities and block privilege escalation; add back only the
     # one Caddy needs to bind the privileged ports 80/443. (A4.)
@@ -40,7 +45,7 @@ services:
       - cordane
 
   cordane:
-    image: ghcr.io/cordane/cordane:latest
+    image: ghcr.io/cordane/cordane:stable
     restart: unless-stopped
     # Runs as a non-root user binding an unprivileged port, so it needs no Linux
     # capabilities at all; drop them and block privilege escalation. (A4.)

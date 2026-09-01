@@ -1,0 +1,24 @@
+Cordane — what the MIT license in this repository does and does not cover
+========================================================================
+
+This repository is Cordane's public home. It contains documentation and
+deployment configuration ONLY — the README, the security policy, and the
+Docker Compose stack under deploy/. Those contents are MIT-licensed; see
+LICENSE.
+
+The MIT license does NOT extend to the Cordane software itself. The container
+images that deploy/docker-compose.yml pulls —
+
+    ghcr.io/cordane/cordane
+    ghcr.io/cordane/caddy
+
+— are proprietary software owned by Sitedity SRL and are licensed under the
+Cordane Terms of Service at https://cordane.ai/terms, not under MIT.
+
+You may run those images free of charge and with no license key on the
+Community tier (1 worker, 1 project, 2 users, 3 concurrent agent runs, every
+feature included). Paid tiers lift those caps. Pricing and terms:
+https://cordane.ai/#pricing
+
+In short: copy, fork, and adapt everything in this repository freely. The
+images it deploys are ours, and running them is governed by the Terms.

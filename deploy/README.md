@@ -94,8 +94,13 @@ apps using absolute URLs/websockets may break — see the top-level README).
 docker compose pull && docker compose up -d
 ```
 
-A brief blip while cordane restarts; workers auto-reconnect. To roll back, pin
-the previous image tag in `docker-compose.yml` and `up -d` again.
+A brief blip while cordane restarts; workers auto-reconnect.
+
+The compose file pins **`:stable`** — the released build, moved deliberately
+once a version has proven itself on our managed fleet. `:latest` tracks every
+change and is not meant for production. For full control, pin a commit SHA
+(`ghcr.io/cordane/cordane:<sha>`); to roll back, pin the previous SHA and
+`up -d` again.
 
 The hub tells you when there's something to pull: an admin sees an **"A newer
 Cordane is available"** banner under **Settings → Version** once a newer build is
@@ -103,22 +108,30 @@ published (it checks in with cordane.ai daily; it never touches your box — you
 run the two commands above yourself). To turn the check off on an air-gapped or
 privacy-conscious box, set `CORDANE_UPDATE_CHECK=off` in `.env`.
 
-## Building images yourself
+## A DNS provider other than Cloudflare
 
-The compose file pulls `ghcr.io/cordane/{cordane,caddy}`. To build instead:
+The default `Caddyfile` gets its wildcard certificate through Cloudflare's DNS
+API. For any other provider, rebuild the Caddy image with that provider's plugin
+(the full list is at [caddy-dns](https://github.com/caddy-dns)) — everything you
+need is in this folder:
 
 ```sh
-# app image (from the repo root)
-docker build -t ghcr.io/cordane/cordane:latest .
-
-# Caddy with a NON-Cloudflare DNS plugin (see https://github.com/caddy-dns)
-docker build -f deploy/caddy.Dockerfile \
+docker build -f caddy.Dockerfile \
   --build-arg DNS_MODULE=github.com/caddy-dns/route53 \
-  -t ghcr.io/cordane/caddy:latest deploy/
+  -t my-caddy:local .
 ```
 
-Then swap the `dns cloudflare …` line in `Caddyfile` for your provider's
-directive.
+Then point the `caddy` service's `image:` at `my-caddy:local`, swap the
+`dns cloudflare …` line in `Caddyfile` for your provider's directive, and set
+whatever credentials that plugin expects instead of `CF_API_TOKEN`.
+
+Don't want to deal with DNS APIs at all? Use **simple mode** above — HTTP-01
+TLS, no token, no wildcard.
+
+> The `cordane` app image is not built from this repository — this repo holds the
+> deployment configuration, and the application itself is distributed only as the
+> prebuilt image (see [`NOTICE`](../NOTICE)). Build args and image internals are
+> documented here only where you need them to deploy.
 
 ## Operations
 

@@ -1,8 +1,11 @@
 blank_issues_enabled: true
 contact_links:
-  - name: Request beta access
-    url: https://cordane.ai/#beta
-    about: Cordane is in private beta — request an invite here.
+  - name: Install help & questions
+    url: https://cordane.ai/docs
+    about: Setup walkthrough, worker install, and troubleshooting.
+  - name: Managed cloud & pricing
+    url: https://cordane.ai/#pricing
+    about: Prefer not to run the hub yourself? We host it for you.
   - name: Security reports
     url: https://cordane.ai/.well-known/security.txt
     about: Please report vulnerabilities privately (see SECURITY.md), not as issues.

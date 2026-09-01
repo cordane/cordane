@@ -25,3 +25,11 @@ SOFTWARE.
 Note: this license covers the contents of this repository (documentation and
 deployment configuration) only. Cordane itself — the server, worker, and web
 application — is proprietary software; see https://cordane.ai for terms.
+
+
+---
+
+SCOPE: The MIT license above applies to the contents of this repository
+(documentation and deployment configuration). It does not apply to the Cordane
+container images those files deploy, which are proprietary and licensed under
+the Cordane Terms of Service (https://cordane.ai/terms). See NOTICE.
