@@ -54,7 +54,9 @@ start time — 07:00, in *your* time zone, not the server's — and it runs itse
 overnight, so the branch and the diff are waiting when you sit down. Review a
 diff and a green-checks badge, then merge — from your phone if that's where you
 are. Anything the agent leaves in `.cordane/outputs/` — a screenshot of the
-feature, a report — is attached to the ticket when its run ends. Every run
+feature, a report — is attached to the ticket when its run ends. Agents know
+both channels without being told: the hub installs a [skill](skills/) on every
+worker that Claude Code, Codex, opencode and pi read at session start. Every run
 keeps its full audit trail: exact prompt, exact diff, what checks ran. Keep
 your tracker — this is the execution layer where agent work happens, not a
 project-management tool.
