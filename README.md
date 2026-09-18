@@ -15,6 +15,14 @@ no inbound ports, no VPN, no SSH config.
 [jump to the quickstart](#self-hosting). Or let us run the hub for you: see
 [pricing](https://cordane.ai/#pricing).
 
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=3IyaGPtSgRw" title="Handing a ticket to a coding agent — worktree, branch, plan (3:36)">
+    <img src="https://cordane.ai/images/readme-agent.gif" alt="A kanban ticket handed to Claude Code: Plan cuts a git worktree and the agent starts working on a machine you own" width="880" />
+  </a>
+  <br />
+  <sub>A real run, not a rehearsal — <a href="https://www.youtube.com/watch?v=3IyaGPtSgRw">watch the full 3:36</a> · <a href="https://www.youtube.com/@cordanehq">24 one-feature walkthroughs</a></sub>
+</p>
+
 ```mermaid
 flowchart LR
     subgraph anywhere["Any browser, anywhere"]
@@ -73,6 +81,22 @@ projects shared across a team, each member running work on their own private
 worker. Self-host the hub on a $5 VPS, or use the managed cloud
 (`your-team.cordane.app`) — workers stay on your hardware either way. Your
 code, secrets, and compute never leave machines you control.
+
+## See it
+
+One short video per feature, nothing staged — the agent output is whatever the
+model produced on the day it was filmed.
+
+| | |
+|---|---|
+| [Close your laptop, keep your shell](https://www.youtube.com/watch?v=fQDuRSfVSUs) · 1:26 | a process on your machine survives a closed tab **and a hub restart** — timestamps prove it |
+| [Handing a ticket to a coding agent](https://www.youtube.com/watch?v=3IyaGPtSgRw) · 3:36 | Plan cuts a worktree and hands Claude Code the ticket; the plan lands back on the card |
+| [Self-hosting a worker](https://www.youtube.com/watch?v=7rDSToBdE4o) · 1:16 | one command behind NAT, then `ss -ltnp` shows it listens on nothing |
+| [Port forwards — no ngrok](https://www.youtube.com/watch?v=GhaUgoS6QBQ) · 3:20 | a stable link for any port, and a share link that needs no account |
+| [Cordane on a phone](https://www.youtube.com/watch?v=B18gW68vpBg) · 0:35 | the whole hub, not a cut-down app — a PR reviewed and merged from a phone |
+
+All of them, by topic: [@cordanehq](https://www.youtube.com/@cordanehq). How it
+works under the hood: [One outbound WebSocket](https://cordane.ai/blog/outbound-websocket).
 
 ## How it's built
 
