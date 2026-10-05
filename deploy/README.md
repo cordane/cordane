@@ -36,7 +36,7 @@ nano .env                       # fill in the values below
 openssl rand -base64 32         # → paste as CORDANE_SECRET_KEY (back it up!)
 
 docker compose up -d
-docker compose logs -f cordane  # watch it boot
+docker compose logs -f          # both containers — TLS/cert errors show in caddy's log
 ```
 
 Open `https://<your EXTERNAL_URL>` and sign in with GitHub — **the first account
@@ -47,8 +47,8 @@ to sign in becomes the admin**.
 | Var | What |
 |-----|------|
 | `EXTERNAL_URL` / `CONTROL_HOST` | your hub URL / hostname |
-| `PROXY_DOMAIN` | wildcard preview base (blank = path-based, see below) |
-| `CF_API_TOKEN` | Cloudflare token, `Zone:DNS:Edit` — for the wildcard cert |
+| `PROXY_DOMAIN` | wildcard mode only — preview base (blank in simple mode) |
+| `CF_API_TOKEN` | wildcard mode only — Cloudflare token, `Zone:DNS:Edit` |
 | `CORDANE_SECRET_KEY` | `openssl rand -base64 32` — **back up out-of-band** |
 | `CORDANE_GITHUB_CLIENT_ID/SECRET` | GitHub OAuth app (sign-in) |
 
@@ -60,7 +60,7 @@ terminates TLS itself; proxying would break the streaming connections):
 | Type | Name | Value |
 |------|------|-------|
 | A | `cordane.app` (apex/hub) | `<VPS IP>` |
-| A | `*.cordane.app` (previews) | `<VPS IP>` |
+| A | `*.cordane.app` (previews — wildcard mode only) | `<VPS IP>` |
 
 ### GitHub OAuth
 
@@ -77,16 +77,60 @@ Leave them blank to run with no backups (data lives only on the `cordane_data`
 volume). **Back up `CORDANE_SECRET_KEY` separately** — it is *not* in the
 litestream replica.
 
-## Simple mode (no DNS token, no wildcard)
+## Simple mode and wildcard mode
 
-Don't want to create a DNS API token? Serve a single hostname with HTTP-01 TLS
-and path-based previews:
+**Simple mode is the default** for a new install: `.env.example` sets
+`CADDYFILE=Caddyfile.pathbased`. One hostname, an HTTP-01 certificate, no DNS
+API token, and app previews at `/w/{worker}/{app}/` on the hub's origin — fine
+for simple or trusted apps; apps that use absolute URLs or websockets may break.
 
-1. In `.env`, leave `PROXY_DOMAIN` and `CF_API_TOKEN` blank.
-2. In `docker-compose.yml`, mount `./Caddyfile.pathbased` instead of `./Caddyfile`.
+**Wildcard mode** gives every preview its own origin (`myapp--worker.<domain>`),
+which is both safer and compatible with any web app. To switch, in `.env`:
 
-App previews are then at `/w/{worker}/{app}/` (fine for simple/trusted apps;
-apps using absolute URLs/websockets may break — see the top-level README).
+```sh
+CADDYFILE=Caddyfile          # the wildcard Caddyfile
+PROXY_DOMAIN=cordane.example.com
+CF_API_TOKEN=…               # Cloudflare, Zone:DNS:Edit (other providers: below)
+```
+
+add the `*.` DNS record above, and `docker compose up -d`. (An `.env` from before
+`CADDYFILE` existed has no such line and keeps the wildcard file it was set up
+with.)
+
+## Keep the worker running
+
+`cordane worker join` enrolls a machine and then keeps running as the worker in
+that terminal. To keep it up across logouts and reboots, run `cordane worker run`
+as a service. On Linux, a systemd user unit at
+`~/.config/systemd/user/cordane-worker.service`:
+
+```ini
+[Unit]
+Description=Cordane worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/cordane worker run --dir %h/.cordane/worker
+WorkingDirectory=%h
+# Headless agents are started by the worker, so it needs the PATH your shell
+# has — wherever claude / codex / opencode / pi and gh live.
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target
+```
+
+```sh
+systemctl --user daemon-reload && systemctl --user enable --now cordane-worker
+loginctl enable-linger "$USER"   # start at boot, without a login
+```
+
+Use the path `install.sh` printed if it isn't `/usr/local/bin`. Restarting the
+worker ends its terminals (`cordane worker upgrade` keeps them); a hub restart
+doesn't. On macOS, a launchd agent running the same command does the job.
 
 ## Updating
 

@@ -34,11 +34,15 @@ services:
       - "443:443/udp" # HTTP/3
     environment:
       CONTROL_HOST: ${CONTROL_HOST}
-      PROXY_DOMAIN: ${PROXY_DOMAIN}
-      CF_API_TOKEN: ${CF_API_TOKEN}
+      PROXY_DOMAIN: ${PROXY_DOMAIN:-}
+      CF_API_TOKEN: ${CF_API_TOKEN:-}
       ACME_EMAIL: ${ACME_EMAIL:-}
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # Which Caddyfile: .env.example sets CADDYFILE=Caddyfile.pathbased (simple
+      # mode — one hostname, plain HTTPS, no DNS token) for new installs. Unset, it
+      # stays the wildcard ./Caddyfile, so installs from before this setting existed
+      # keep the mode they were set up with. See deploy/README.md.
+      - ./${CADDYFILE:-Caddyfile}:/etc/caddy/Caddyfile:ro
       - caddy_data:/data # certs & ACME account — persist to avoid re-issuing
       - caddy_config:/config
     depends_on:

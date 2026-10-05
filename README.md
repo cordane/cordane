@@ -114,13 +114,15 @@ cordane worker join https://your-team.cordane.app --token crdjt_…
 ## Self-hosting
 
 Two containers on one small VPS: the hub, plus Caddy for automatic TLS. Images
-are public on GHCR, so you need nothing installed but Docker.
+are public on GHCR, so you need nothing installed but Docker. First point a DNS
+`A` record for your hub's hostname (e.g. `cordane.example.com`) at the box.
 
 ```sh
 git clone https://github.com/cordane/cordane.git
 cd cordane/deploy
 cp .env.example .env         # fill in the values below, then:
 docker compose up -d
+docker compose logs -f       # both containers; Ctrl-C once the hub is listening
 ```
 
 Five values in `.env` get you running — your hub's URL, a secret key, and a
@@ -130,25 +132,46 @@ GitHub OAuth app's id/secret for sign-in:
 |-----|------|
 | `EXTERNAL_URL` / `CONTROL_HOST` | your hub's URL / hostname |
 | `CORDANE_SECRET_KEY` | `openssl rand -base64 32` — **back this up** |
-| `CORDANE_GITHUB_CLIENT_ID/SECRET` | a GitHub OAuth app, callback `${EXTERNAL_URL}/api/v1/auth/github/callback` |
+| `CORDANE_GITHUB_CLIENT_ID/SECRET` | a GitHub OAuth app ([create one](https://github.com/settings/applications/new)): homepage = your `EXTERNAL_URL`, callback `${EXTERNAL_URL}/api/v1/auth/github/callback`; then *Generate a new client secret* |
+
+That's simple mode: one hostname, a normal certificate, previews at
+`/w/{worker}/{app}/`. Wildcard preview subdomains need a DNS API token —
+switching is three lines in `.env`, see [`deploy/README.md`](deploy/README.md).
 
 Open your `EXTERNAL_URL` and sign in with GitHub — **the first account to sign
-in becomes the admin.** Then connect a machine:
+in becomes the admin**, so do it right away. Then connect a machine:
 
 ```sh
 curl -fsSL https://<your-hub>/install.sh | sh            # installs the `cordane` binary
 cordane worker join https://<your-hub> --token crdjt_…   # token from the hub's Workers page
 ```
 
-DNS records, wildcard preview subdomains, backups to any S3-compatible bucket,
-and a "simple mode" that needs no DNS API token are all in
+`join` enrolls the machine and keeps running as the worker; to keep it up after
+you log out, run it under systemd/launchd (`cordane worker run` — see
+[`deploy/README.md`](deploy/README.md#keep-the-worker-running)).
+
+### Your first agent run
+
+1. **On the worker**, install the agent you want and sign in once in a normal
+   terminal — e.g. `claude` (Claude Code), `codex`, `opencode` or `pi`. Cordane
+   drives the agent that's there; it doesn't bring its own login.
+2. **New project**: pick your worker and a repo (an SSH/HTTPS URL it can clone,
+   or a checkout already on the worker). For implementing, tick **Allow the
+   agent to run commands** — off by default, because a headless implement runs
+   the agent without permission prompts.
+3. **New ticket** → **▶ Plan**: the ticket's space opens with the agent working.
+   When the plan lands, **✓ Approve → Implement**; when the agent finishes, the
+   ticket moves to review with its diff, and a PR if the worker has `gh`.
+
+Backups to any S3-compatible bucket and the wildcard mode are in
 [`deploy/README.md`](deploy/README.md).
 
 **No license key required.** The Community tier — 1 worker, 1 project, 2 users,
-3 concurrent agent runs, and *every* feature — is free forever and never phones
-home. Paid keys lift the caps and keep working offline within a grace window, so
-a Cordane outage never blocks you. See
-[pricing](https://cordane.ai/#pricing).
+3 concurrent agent runs, and *every* feature — is free forever and makes no
+license calls; the only request a keyless hub sends us is an update check
+(release channel name only — `CORDANE_UPDATE_CHECK=off` turns it off). Paid keys
+lift the caps and keep working offline within a grace window, so a Cordane
+outage never blocks you. See [pricing](https://cordane.ai/#pricing).
 
 ## Issues & feedback
 

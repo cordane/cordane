@@ -8,8 +8,10 @@
 # simple/trusted apps, not for arbitrary web apps. For real previews use the
 # default wildcard Caddyfile instead.
 #
-# To use: in docker-compose.yml mount this file instead of ./Caddyfile:
-#     - ./Caddyfile.pathbased:/etc/caddy/Caddyfile:ro
+# It is the default for new installs: .env.example sets
+#     CADDYFILE=Caddyfile.pathbased
+# (docker-compose.yml mounts ./${CADDYFILE}). Set CADDYFILE=Caddyfile to switch
+# to the wildcard file.
 
 {$CONTROL_HOST} {
 	encode zstd gzip
