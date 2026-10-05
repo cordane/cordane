@@ -74,6 +74,16 @@ services:
       # --- update check (blank = on; "off" disables the update-available banner) ---
       CORDANE_UPDATE_CHECK: ${CORDANE_UPDATE_CHECK:-}
       CORDANE_UPDATE_CHANNEL: ${CORDANE_UPDATE_CHANNEL:-}
+      # --- alert email (all blank = email alerts unavailable; webhooks still work) ---
+      CORDANE_SMTP_HOST: ${CORDANE_SMTP_HOST:-}
+      CORDANE_SMTP_PORT: ${CORDANE_SMTP_PORT:-}
+      CORDANE_SMTP_FROM: ${CORDANE_SMTP_FROM:-}
+      CORDANE_SMTP_USERNAME: ${CORDANE_SMTP_USERNAME:-}
+      CORDANE_SMTP_PASSWORD: ${CORDANE_SMTP_PASSWORD:-}
+      CORDANE_SMTP_SECURITY: ${CORDANE_SMTP_SECURITY:-}
+      # --- private-network targets (blank = blocked; link-local always blocked) ---
+      CORDANE_ALLOW_PRIVATE_CONNECTIONS: ${CORDANE_ALLOW_PRIVATE_CONNECTIONS:-}
+      CORDANE_ALLOW_PRIVATE_WEBHOOKS: ${CORDANE_ALLOW_PRIVATE_WEBHOOKS:-}
       # --- backups to object storage (all blank = disabled) ---
       LITESTREAM_ENDPOINT: ${LITESTREAM_ENDPOINT:-}
       LITESTREAM_BUCKET: ${LITESTREAM_BUCKET:-}

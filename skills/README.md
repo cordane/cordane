@@ -6,7 +6,7 @@ know how to work with Cordane without being told in every prompt.
 
 | Skill | What it teaches |
 |---|---|
-| [`cordane`](cordane/SKILL.md) | Handing files to the humans: `cordane get <path>` for a download button right now, `.cordane/outputs/` to attach files to the ticket when a run ends, and where files attached to a ticket land. |
+| [`cordane`](cordane/SKILL.md) | Handing files to the humans: `cordane get <path>` for a download button right now, `.cordane/outputs/` to attach files to the ticket when a run ends, where files attached to a ticket land, and when to use the `cordane mcp` board tools (`request_human`, `attach_file`, `create_ticket`, …) if the agent has them. |
 
 ## You don't normally install these
 

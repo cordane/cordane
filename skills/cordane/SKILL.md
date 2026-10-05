@@ -3,7 +3,7 @@ name: cordane
 description: Hand files to the people you work with from inside Cordane — a terminal in a Cordane space, or a ticket worktree. Use when asked to send, share, show, export, download or attach a file, screenshot, report, log or build artifact, or when you produced one the person should look at. Covers `cordane get <path>` (offer a file or directory for download right now), `.cordane/outputs/` (attach files to the ticket when the run ends) and where files the humans attached land (`.cordane/attachments/`).
 ---
 
-<!-- cordane-skill v1: installed by the Cordane hub and rewritten when the hub ships a newer one — edits made here are lost. Source: https://github.com/cordane/cordane/tree/main/skills -->
+<!-- cordane-skill v2: installed by the Cordane hub and rewritten when the hub ships a newer one — edits made here are lost. Source: https://github.com/cordane/cordane/tree/main/skills -->
 
 # Handing files to the humans (Cordane)
 
@@ -33,6 +33,16 @@ cordane get <path> [<path>...]
 When you work a ticket, the directory your session started in (Cordane's prompts call it `$WORKING_DIR`) holds `.cordane/TICKET.md`. Write deliverables to `.cordane/outputs/` beside it, creating the directory if it is missing. When your run ends, every regular file there — up to 25 MB each; folders and symlinks are ignored — becomes an attachment on the ticket. The directory is git-excluded and is NOT for source changes: code stays in the repo.
 
 On a multi-repo ticket that directory is the workspace root that CONTAINS the repo checkouts, not one of them.
+
+## The board tools (`cordane mcp`)
+
+If you have tools from an MCP server named `cordane` — `get_ticket`, `list_tickets`, `create_ticket`, `comment`, `request_human`, `attach_file`, `set_status_note` — they act on the ticket this session works:
+
+- `attach_file <path>` puts a file from the worktree on the ticket **now**, without waiting for the run to end — the ticket-side twin of `cordane get`.
+- `request_human` is how you say you are blocked or need a decision; it flags the ticket's card until a person resolves it. Don't stop silently and don't ask only in your final message.
+- `create_ticket` files out-of-scope work you discovered into the Backlog; `comment` records findings on the ticket.
+
+No such tools? The server is not registered with your CLI on this machine (`cordane mcp install` does it), or this is not a Cordane session. Everything above still works without it.
 
 ## Files from the humans
 

@@ -67,13 +67,35 @@ space (the same session, if the space is still open) or as a background pass
 on the same branch. A project can also send failing checks back to the agent on
 its own: the failing commands and the tail of their output, up to a retry
 budget you set (off by default), after which the ticket waits in review for
-you. Anything the agent leaves in `.cordane/outputs/` — a screenshot of the
-feature, a report — is attached to the ticket when its run ends. Agents know
-both channels without being told: the hub installs a [skill](skills/) on every
-worker that Claude Code, Codex, opencode and pi read at session start. Every run
-keeps its full audit trail: exact prompt, exact diff, what checks ran. Keep
-your tracker — this is the execution layer where agent work happens, not a
-project-management tool.
+you. Review on GitHub instead? A *changes requested* on the PR becomes the same
+kind of round, read with the worker's own `gh` and only from the repo's
+collaborators. Anything the agent leaves in `.cordane/outputs/` — a screenshot
+of the feature, a report — is attached to the ticket when its run ends. Agents
+know both channels without being told: the hub installs a [skill](skills/) on
+every worker that Claude Code, Codex, opencode and pi read at session start.
+Every run keeps its full audit trail: exact prompt, exact diff, what checks ran.
+Keep your tracker — this is the execution layer where agent work happens, not a
+project-management tool. Tickets come in from **Sentry, Jira, GitHub Issues or
+Linear** (paste an issue URL, or let a filter create them), and the upstream
+issue is closed when the ticket is done.
+
+**More than one agent, more than one ticket.** A ticket can wait on others
+(*blocked by*), and a plan too big for one pass splits into sub-tickets that
+can run one after another. Not sure which agent will do it best? **Race** two or three on the
+same ticket — each in its own worktree on its own branch — compare their diffs
+and checks side by side, and keep the winner. **Detect from repo** reads your
+manifests on the worker and proposes the setup, start and check hooks, so a new
+project doesn't start from a blank form.
+
+**Told when it matters, and what it cost.** An agent stuck on a permission
+prompt, a failed run, a plan waiting for approval, work ready for review:
+Cordane tells the person whose agent it is — in the browser, through a webhook
+(presets for ntfy, Slack and Discord), or by email when the hub has SMTP.
+Agents can speak up mid-run too: `cordane mcp` gives the agent working a ticket
+tools to read it, comment, file a follow-up, attach a file or flag it for a
+human. Each headless run records the usage its agent CLI reports — tokens, and
+cost from Claude Code and opencode — and a per-project **Insights** page shows
+runs, success rate, time and spend by agent.
 
 **Preview links without a tunnel.** Apps on a worker get a stable subdomain
 (`myapp--worker.your-domain`) served through the worker's outbound connection —
