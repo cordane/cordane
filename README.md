@@ -157,11 +157,14 @@ you log out, run it under systemd/launchd (`cordane worker run` — see
    drives the agent that's there; it doesn't bring its own login.
 2. **New project**: pick your worker and a repo (an SSH/HTTPS URL it can clone,
    or a checkout already on the worker). For implementing, tick **Allow the
-   agent to run commands** — off by default, because a headless implement runs
-   the agent without permission prompts.
+   agent to run commands** — off by default, because a background (headless)
+   implement runs the agent without permission prompts.
 3. **New ticket** → **▶ Plan**: the ticket's space opens with the agent working.
-   When the plan lands, **✓ Approve → Implement**; when the agent finishes, the
-   ticket moves to review with its diff, and a PR if the worker has `gh`.
+   When the plan lands, **✓ Approve → Implement**. These buttons drive the agent
+   live in the space, so it asks you there for any permission it needs — answer
+   in the pane (or set the project's agent command to skip them, e.g.
+   `claude --dangerously-skip-permissions`). When the agent finishes, the ticket
+   moves to review with its diff, and a PR if the worker has `gh`.
 
 Backups to any S3-compatible bucket and the wildcard mode are in
 [`deploy/README.md`](deploy/README.md).
