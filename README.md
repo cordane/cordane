@@ -61,7 +61,13 @@ coding agent loose — while the whole team watches live. Or give the ticket a
 start time — 07:00, in *your* time zone, not the server's — and it runs itself
 overnight, so the branch and the diff are waiting when you sit down. Review a
 diff and a green-checks badge, then merge — from your phone if that's where you
-are. Anything the agent leaves in `.cordane/outputs/` — a screenshot of the
+are. Not right yet? **Request changes**: write what to fix, click lines of the
+diff to pin notes to them, and send it back — to the agent in the ticket's
+space (the same session, if the space is still open) or as a background pass
+on the same branch. A project can also send failing checks back to the agent on
+its own: the failing commands and the tail of their output, up to a retry
+budget you set (off by default), after which the ticket waits in review for
+you. Anything the agent leaves in `.cordane/outputs/` — a screenshot of the
 feature, a report — is attached to the ticket when its run ends. Agents know
 both channels without being told: the hub installs a [skill](skills/) on every
 worker that Claude Code, Codex, opencode and pi read at session start. Every run
