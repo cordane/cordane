@@ -51,7 +51,8 @@ side-by-side terminals, and *space definitions* (saved layout + working dir +
 command per pane) respawn your setup on demand — an alternative, not a drop-in
 replacement (no tmux keybindings or copy-mode). Files move without `scp`: a
 **files** menu on the space browses the machine, downloads a file or a whole
-folder, and takes drops to upload; `cordane get report.pdf` typed in a terminal
+folder (videos, PDFs, images and logs also open in a tab), and takes drops to
+upload; `cordane get report.pdf` typed in a terminal
 offers that file to whoever may download it. Owner-only unless you say
 otherwise.
 
