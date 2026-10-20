@@ -41,6 +41,7 @@ If you have tools from an MCP server named `cordane` — `get_ticket`, `list_tic
 - `attach_file <path>` puts a file from the worktree on the ticket **now**, without waiting for the run to end — the ticket-side twin of `cordane get`.
 - `request_human` is how you say you are blocked or need a decision; it flags the ticket's card until a person resolves it. Don't stop silently and don't ask only in your final message.
 - `create_ticket` files out-of-scope work you discovered into the Backlog; `comment` records findings on the ticket.
+- In a space, `get_space` shows its OTHER terminals by number; `run_command` runs a shell line in one and returns its output and exit code, `read_terminal` / `wait_for` watch one (a dev server, a build), `prompt_agent` hands another agent in the space a task. Start long-running processes in their own terminal (`open_terminal`) rather than your own.
 
 No such tools? The server is not registered with your CLI on this machine (`cordane mcp install` does it), or this is not a Cordane session. Everything above still works without it.
 

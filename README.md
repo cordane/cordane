@@ -99,6 +99,18 @@ cost from Claude Code and opencode — and a per-project **Insights** page shows
 runs, success rate, time and spend by agent.
 
 **Preview links without a tunnel.** Apps on a worker get a stable subdomain
+**Terminals an agent — or your laptop — can drive.** In a space, the same
+`cordane mcp` server lets an agent work the space's other terminals: run a
+command and get back its output and exit code, type keys, wait for output, or
+hand the agent in another pane a task. It reaches only its own space, and by
+default an agent working a ticket imported from Sentry, Jira, Linear or GitHub
+— or one that has read such a ticket — may only read its neighbours. With a
+personal API token (**Settings → API tokens**), an MCP client on your laptop —
+Claude Code or Cursor over `https://<hub>/api/v1/mcp`, Claude Desktop by
+signing in — can start and stop spaces, define layouts, run worker apps, share
+spaces and drive their terminals. Admins can turn tokens off or limit them to
+admins; terminal input is written to the audit log.
+
 (`myapp--worker.your-domain`) served through the worker's outbound connection —
 no ngrok, no rotating hostnames, no per-seat paywall. Auth on by default;
 flip an app to **Public** to share it with anyone, no account needed. Ticket
