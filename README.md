@@ -11,9 +11,10 @@ no inbound ports, no VPN, no SSH config.
 🌐 **[cordane.ai](https://cordane.ai)** · 📖 **[Docs](https://cordane.ai/docs)** ·
 🗺 **[Roadmap](https://cordane.ai/roadmap)** · 🔒 **[Security](SECURITY.md)**
 
-**Free forever, self-hosted, every feature.** Two containers on a small VPS —
-[jump to the quickstart](#self-hosting). Or let us run the hub for you: see
-[pricing](https://cordane.ai/#pricing).
+**Free forever, self-hosted, every feature.** Try it on your own machine in one
+command ([`cordane up`](#try-it-on-your-machine)), run two containers on a small
+VPS for your team ([quickstart](#self-hosting)), or let us run the hub for you:
+see [pricing](https://cordane.ai/#pricing).
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=3IyaGPtSgRw" title="Handing a ticket to a coding agent — worktree, branch, plan (3:36)">
@@ -98,7 +99,6 @@ human. Each headless run records the usage its agent CLI reports — tokens, and
 cost from Claude Code and opencode — and a per-project **Insights** page shows
 runs, success rate, time and spend by agent.
 
-**Preview links without a tunnel.** Apps on a worker get a stable subdomain
 **Terminals an agent — or your laptop — can drive.** In a space, the same
 `cordane mcp` server lets an agent work the space's other terminals: run a
 command and get back its output and exit code, type keys, wait for output, or
@@ -111,6 +111,7 @@ signing in — can start and stop spaces, define layouts, run worker apps, share
 spaces and drive their terminals. Admins can turn tokens off or limit them to
 admins; terminal input is written to the audit log.
 
+**Preview links without a tunnel.** Apps on a worker get a stable subdomain
 (`myapp--worker.your-domain`) served through the worker's outbound connection —
 no ngrok, no rotating hostnames, no per-seat paywall. Auth on by default;
 flip an app to **Public** to share it with anyone, no account needed. Ticket
@@ -151,6 +152,32 @@ works under the hood: [One outbound WebSocket](https://cordane.ai/blog/outbound-
 ```sh
 cordane worker join https://your-team.cordane.app --token crdjt_…
 ```
+
+## Try it on your machine
+
+One command, no server, no DNS, no GitHub app:
+
+```sh
+curl -fsSL https://cordane.ai/install.sh | sh   # the `cordane` binary (Linux, macOS)
+cordane up
+```
+
+Or both in one go, which also works before `~/.local/bin` is on your `PATH`:
+`curl -fsSL https://cordane.ai/install.sh | sh -s up`.
+
+`cordane up` starts a hub on `localhost` with this machine as its worker, signs
+you in, and opens the board in your browser. It's a single-user hub that
+listens only on loopback: sign-in links come from the terminal (`cordane login`
+prints a fresh one), and app previews open at
+`http://<app>--<worker>.localhost:8080` in Chrome, Firefox or Edge
+(`--path-previews` covers Safari). Everything lives in `~/.cordane-local`, so
+`rm -rf ~/.cordane-local` starts over. Terminals and agents run while the
+command does, and Ctrl-C stops them; `cordane up --install-service` keeps it
+running in the background instead (a systemd user service or launchd agent that
+starts at login). When you want it on your phone, for a
+team, or always on, self-host a hub (below) or use
+[managed cloud](https://cordane.ai/#pricing). Your machine stays the worker
+either way.
 
 ## Self-hosting
 
