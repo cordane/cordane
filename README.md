@@ -21,7 +21,7 @@ see [pricing](https://cordane.ai/#pricing).
     <img src="https://cordane.ai/images/readme-agent.gif" alt="A kanban ticket handed to Claude Code: Plan cuts a git worktree and the agent starts working on a machine you own" width="880" />
   </a>
   <br />
-  <sub>A real run, not a rehearsal — <a href="https://www.youtube.com/watch?v=3IyaGPtSgRw">watch the full 3:36</a> · <a href="https://www.youtube.com/@cordanehq">24 one-feature walkthroughs</a></sub>
+  <sub>A real run, not a rehearsal — <a href="https://www.youtube.com/watch?v=3IyaGPtSgRw">watch the full 3:36</a> · <a href="https://www.youtube.com/@cordanehq">30+ one-feature walkthroughs</a></sub>
 </p>
 
 ```mermaid
