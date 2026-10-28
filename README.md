@@ -11,10 +11,23 @@ no inbound ports, no VPN, no SSH config.
 🌐 **[cordane.ai](https://cordane.ai)** · 📖 **[Docs](https://cordane.ai/docs)** ·
 🗺 **[Roadmap](https://cordane.ai/roadmap)** · 🔒 **[Security](SECURITY.md)**
 
-**Free forever, self-hosted, every feature.** Try it on your own machine in one
-command ([`cordane up`](#try-it-on-your-machine)), run two containers on a small
-VPS for your team ([quickstart](#self-hosting)), or let us run the hub for you:
-see [pricing](https://cordane.ai/#pricing).
+**Try it on your machine in one command** — no account, no server, no Docker:
+
+```sh
+curl -fsSL https://cordane.ai/install.sh | sh -s up
+```
+
+It downloads the `cordane` binary (Linux, macOS), checks it against the release
+checksums, then starts a hub on `localhost` with this machine as its worker and
+opens the board in your browser, signed in. Ctrl-C stops it;
+`rm -rf ~/.cordane-local` deletes its data and `~/.local/bin/cordane` is the
+binary. To run a ticket you need Claude
+Code, Codex, opencode or pi installed and logged in; terminals work without one.
+[More on `cordane up`](#try-it-on-your-machine).
+
+**Free forever, self-hosted, every feature.** Run two containers on a small VPS
+for your team ([quickstart](#self-hosting)), or let us run the hub for you: see
+[pricing](https://cordane.ai/#pricing).
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=3IyaGPtSgRw" title="Handing a ticket to a coding agent — worktree, branch, plan (3:36)">
